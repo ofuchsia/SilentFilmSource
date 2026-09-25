@@ -1,0 +1,1282 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Silent Film Locator — 1920s Screening Directory</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Google Fonts: Cinzel Decorative / Playfair Display for glamour & Montserrat for body -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        artblue: {
+                            50: '#f2f8fc',
+                            100: '#e1f0f8',
+                            200: '#c2e3f2',
+                            300: '#95cfe7',
+                            400: '#62b5d8',
+                            500: '#3f99c2',
+                            600: '#307f9f',
+                            700: '#286782',
+                            800: '#24546a',
+                            900: '#214758',
+                            950: '#142c38'
+                        },
+                        // Soft ice blue / vintage sky blue theme
+                        iceblue: {
+                            light: '#eaf4f9',
+                            DEFAULT: '#bce0f0',
+                            bright: '#88cced',
+                            deep: '#4ba6d4'
+                        },
+                        artsilver: {
+                            50: '#f8fafc',
+                            100: '#f1f5f9',
+                            200: '#e2e8f0',
+                            300: '#cbd5e1',
+                            400: '#94a3b8',
+                            500: '#64748b',
+                            600: '#475569',
+                            700: '#334155',
+                            800: '#1e293b',
+                            900: '#0f172a'
+                        },
+                        artgold: {
+                            DEFAULT: '#d4af37',
+                            light: '#f3e5ab',
+                            dark: '#aa8c2c',
+                            shimmer: '#e6ca65'
+                        }
+                    },
+                    fontFamily: {
+                        cinzel: ['Cinzel', 'serif'],
+                        playfair: ['Playfair Display', 'serif'],
+                        sans: ['Montserrat', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Glamorous 1920s Cinema Marquee & Art Deco Styling */
+        .marquee-border {
+            border: 2px solid #d4af37;
+            box-shadow: 0 0 15px rgba(212, 175, 55, 0.25);
+            position: relative;
+        }
+        .marquee-border::before {
+            content: '';
+            position: absolute;
+            top: -5px; left: -5px; right: -5px; bottom: -5px;
+            border: 1px solid #88cced;
+            pointer-events: none;
+        }
+        .art-deco-divider {
+            display: flex;
+            align-items: center;
+            text-align: center;
+            color: #d4af37;
+        }
+        .art-deco-divider::before, .art-deco-divider::after {
+            content: '';
+            flex: 1;
+            border-bottom: 1px solid #d4af37;
+        }
+        .art-deco-divider::before { margin-right: .75em; }
+        .art-deco-divider::after { margin-left: .75em; }
+
+        /* Glamorous cinematic card effect */
+        .cinema-card {
+            background: linear-gradient(145deg, #ffffff 0%, #edf5fc 100%);
+            box-shadow: 0 10px 30px -5px rgba(75, 166, 212, 0.12), 0 8px 10px -6px rgba(75, 166, 212, 0.08);
+            transition: all 0.35s ease;
+            border: 1px solid #c2e3f2;
+        }
+        .cinema-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 35px -10px rgba(75, 166, 212, 0.25);
+            border-color: #d4af37;
+        }
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #eaf4f9;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #95cfe7;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #3f99c2;
+        }
+    </style>
+</head>
+<body class="h-full bg-iceblue-light text-artsilver-800 font-sans flex flex-col justify-between selection:bg-iceblue selection:text-artblue-950">
+
+    <!-- Header / Cinema Marquee Navigation -->
+    <header class="bg-white/95 backdrop-blur-md border-b-2 border-artgold sticky top-0 z-40 shadow-md">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+            <div class="flex items-center space-x-3 cursor-pointer group" onclick="switchTab('explore')">
+                <div class="w-11 h-11 rounded-full bg-gradient-to-tr from-artblue-700 to-iceblue-bright flex items-center justify-center text-white border-2 border-artgold shadow-md group-hover:scale-105 transition-transform">
+                    <i data-lucide="film" class="w-5 h-5 text-artgold-light"></i>
+                </div>
+                <div>
+                    <h1 class="font-cinzel font-black text-lg sm:text-xl tracking-wider text-artblue-950 drop-shadow-xs">SILENT FILM LOCATOR</h1>
+                    <p class="text-xs font-playfair italic text-artgold-dark tracking-widest font-semibold">The 1920s Cinema Palace Guide</p>
+                </div>
+            </div>
+
+            <nav class="hidden md:flex items-center space-x-6">
+                <button onclick="switchTab('explore')" id="nav-explore" class="nav-btn font-cinzel text-xs font-bold tracking-widest text-artblue-800 border-b-2 border-artgold pb-1 transition-all">
+                    FIND SCREENINGS
+                </button>
+                <button onclick="switchTab('poi')" id="nav-poi" class="nav-btn font-cinzel text-xs font-semibold tracking-widest text-artsilver-600 hover:text-artblue-800 pb-1 transition-all">
+                    POINTS OF INTEREST
+                </button>
+                <button onclick="switchTab('submit')" id="nav-submit" class="nav-btn font-cinzel text-xs font-semibold tracking-widest text-artsilver-600 hover:text-artblue-800 pb-1 transition-all">
+                    SUBMIT EVENT
+                </button>
+                <button onclick="switchTab('admin')" id="nav-admin" class="nav-btn font-cinzel text-xs font-semibold tracking-widest text-artsilver-600 hover:text-artblue-800 pb-1 flex items-center space-x-1 transition-all">
+                    <i data-lucide="shield-check" class="w-3.5 h-3.5 text-artgold-dark"></i>
+                    <span>ADMIN PORTAL</span>
+                </button>
+            </nav>
+
+            <div class="flex items-center space-x-3">
+                <button onclick="openSubmitModal()" class="hidden sm:inline-flex items-center space-x-2 bg-gradient-to-r from-artblue-600 to-artblue-700 hover:from-artblue-700 hover:to-artblue-800 text-white px-4 py-2 rounded text-xs font-cinzel font-bold tracking-wider shadow-md transition-all border border-artgold">
+                    <i data-lucide="sparkles" class="w-4 h-4 text-artgold-light"></i>
+                    <span>LIST SCREENING</span>
+                </button>
+                <button onclick="toggleMobileMenu()" class="md:hidden p-2 rounded text-artblue-900 hover:bg-iceblue">
+                    <i data-lucide="menu" class="w-6 h-6"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden md:hidden bg-white border-b border-artgold px-4 pt-3 pb-5 space-y-2 shadow-lg">
+            <button onclick="switchTab('explore'); toggleMobileMenu();" class="block w-full text-left py-2 font-cinzel text-xs font-bold text-artblue-950 border-b border-iceblue">FIND SCREENINGS</button>
+            <button onclick="switchTab('poi'); toggleMobileMenu();" class="block w-full text-left py-2 font-cinzel text-xs font-semibold text-artsilver-700 border-b border-iceblue">POINTS OF INTEREST</button>
+            <button onclick="switchTab('submit'); toggleMobileMenu();" class="block w-full text-left py-2 font-cinzel text-xs font-semibold text-artsilver-700 border-b border-iceblue">SUBMIT EVENT</button>
+            <button onclick="switchTab('admin'); toggleMobileMenu();" class="block w-full text-left py-2 font-cinzel text-xs font-semibold text-artsilver-700 flex items-center space-x-1">
+                <i data-lucide="shield-check" class="w-4 h-4 text-artgold-dark"></i>
+                <span>ADMIN PORTAL</span>
+            </button>
+        </div>
+    </header>
+
+    <main class="flex-grow">
+        
+        <!-- TAB 1: EXPLORE / SEARCH SCREENINGS -->
+        <section id="tab-explore" class="tab-content max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            
+            <!-- Glamorous Cinema Marquee Hero Banner -->
+            <div class="bg-gradient-to-r from-artblue-900 via-artblue-800 to-artblue-900 text-white rounded-xl p-8 sm:p-12 mb-10 shadow-2xl relative overflow-hidden border-2 border-artgold">
+                <div class="absolute -right-10 -bottom-10 opacity-15 pointer-events-none">
+                    <i data-lucide="projector" class="w-80 h-80 text-artgold"></i>
+                </div>
+                <div class="absolute top-0 left-1/4 w-1/2 h-1 bg-gradient-to-r from-transparent via-artgold to-transparent"></div>
+                
+                <div class="max-w-2xl relative z-10">
+                    <div class="inline-flex items-center space-x-2 bg-artblue-950/80 border border-artgold px-3.5 py-1.5 rounded-full text-xs font-cinzel font-bold text-artgold-light mb-4 shadow-sm">
+                        <i data-lucide="star" class="w-3.5 h-3.5 text-artgold fill-artgold"></i>
+                        <span>THE GOLDEN ERA OF CINEMA & LIVE ACCOMPANIMENT</span>
+                    </div>
+                    <h2 class="font-cinzel text-3xl sm:text-5xl font-black tracking-wide mb-4 text-white drop-shadow-md">
+                        Step Inside The Silver Screen Palace
+                    </h2>
+                    <p class="font-playfair text-iceblue text-base sm:text-lg mb-8 leading-relaxed">
+                        Uncover magical live screenings featuring Wurlitzer organ performances, chamber orchestras, and pristine masterworks playing at historic venues across the globe.
+                    </p>
+                    <div class="flex flex-wrap gap-4">
+                        <a href="#search-section" class="bg-artgold hover:bg-artgold-shimmer text-artblue-950 font-cinzel font-black text-xs px-6 py-3.5 rounded shadow-lg tracking-widest transition-all transform hover:-translate-y-0.5">
+                            SEARCH SCREENINGS
+                        </a>
+                        <button onclick="openSubmitModal()" class="bg-artblue-950/60 hover:bg-artblue-950 text-iceblue-light border-2 border-artgold font-cinzel font-bold text-xs px-6 py-3.5 rounded tracking-widest transition-all">
+                            SUBMIT YOUR THEATER
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Search & Filter Controls -->
+            <div id="search-section" class="bg-white rounded-xl shadow-xl border-2 border-iceblue p-6 sm:p-8 mb-10 relative">
+                <div class="absolute -top-3 left-8 bg-artgold text-artblue-950 px-3 py-0.5 rounded text-xs font-cinzel font-black tracking-widest uppercase">
+                    Cinema Search Finder
+                </div>
+
+                <div class="flex items-center justify-between mb-6 pb-4 border-b border-iceblue pt-2">
+                    <div class="flex items-center space-x-2">
+                        <i data-lucide="search" class="w-5 h-5 text-artblue-600"></i>
+                        <h3 class="font-cinzel font-bold text-artblue-950 text-lg">Filter Screenings & Locations</h3>
+                    </div>
+                    <button onclick="resetFilters()" class="text-xs font-cinzel font-bold text-artsilver-500 hover:text-artblue-700 underline transition-all">
+                        Reset All Filters
+                    </button>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-5">
+                    <!-- Keyword / Film / Theater Name -->
+                    <div>
+                        <label class="block font-cinzel text-xs font-bold text-artblue-900 mb-1.5">Keyword / Title / Theater</label>
+                        <div class="relative">
+                            <span class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-artsilver-400">
+                                <i data-lucide="film" class="w-4 h-4 text-artblue-600"></i>
+                            </span>
+                            <input type="text" id="filter-keyword" placeholder="e.g. Metropolis, Orpheum..." oninput="handleSearch()" class="w-full pl-9 pr-3 py-3 bg-iceblue-light/50 border border-iceblue rounded-lg text-sm focus:outline-none focus:border-artblue-600 font-sans text-artsilver-900">
+                        </div>
+                    </div>
+
+                    <!-- Country -->
+                    <div>
+                        <label class="block font-cinzel text-xs font-bold text-artblue-900 mb-1.5">Country</label>
+                        <select id="filter-country" onchange="handleSearch()" class="w-full px-3 py-3 bg-iceblue-light/50 border border-iceblue rounded-lg text-sm focus:outline-none focus:border-artblue-600 font-sans text-artsilver-900">
+                            <option value="">All Countries</option>
+                            <option value="United States">United States</option>
+                            <option value="United Kingdom">United Kingdom</option>
+                            <option value="France">France</option>
+                            <option value="Germany">Germany</option>
+                            <option value="Italy">Italy</option>
+                            <option value="Canada">Canada</option>
+                        </select>
+                    </div>
+
+                    <!-- State / Province -->
+                    <div>
+                        <label class="block font-cinzel text-xs font-bold text-artblue-900 mb-1.5">State / Province</label>
+                        <input type="text" id="filter-state" placeholder="e.g. California, NY, Île-de-France..." oninput="handleSearch()" class="w-full px-3 py-3 bg-iceblue-light/50 border border-iceblue rounded-lg text-sm focus:outline-none focus:border-artblue-600 font-sans text-artsilver-900">
+                    </div>
+
+                    <!-- City -->
+                    <div>
+                        <label class="block font-cinzel text-xs font-bold text-artblue-900 mb-1.5">City</label>
+                        <input type="text" id="filter-city" placeholder="e.g. Los Angeles, Paris..." oninput="handleSearch()" class="w-full px-3 py-3 bg-iceblue-light/50 border border-iceblue rounded-lg text-sm focus:outline-none focus:border-artblue-600 font-sans text-artsilver-900">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 pt-4 border-t border-iceblue">
+                    <!-- Zip Code -->
+                    <div>
+                        <label class="block font-cinzel text-xs font-bold text-artblue-900 mb-1.5">Zip / Postal Code</label>
+                        <input type="text" id="filter-zip" placeholder="e.g. 90028, 75001..." oninput="handleSearch()" class="w-full px-3 py-3 bg-iceblue-light/50 border border-iceblue rounded-lg text-sm focus:outline-none focus:border-artblue-600 font-sans text-artsilver-900">
+                    </div>
+
+                    <!-- Area Code -->
+                    <div>
+                        <label class="block font-cinzel text-xs font-bold text-artblue-900 mb-1.5">Area Code</label>
+                        <input type="text" id="filter-areacode" placeholder="e.g. 213, 020..." oninput="handleSearch()" class="w-full px-3 py-3 bg-iceblue-light/50 border border-iceblue rounded-lg text-sm focus:outline-none focus:border-artblue-600 font-sans text-artsilver-900">
+                    </div>
+
+                    <!-- Sort By -->
+                    <div>
+                        <label class="block font-cinzel text-xs font-bold text-artblue-900 mb-1.5">Sort Screenings</label>
+                        <select id="filter-sort" onchange="handleSearch()" class="w-full px-3 py-3 bg-iceblue-light/50 border border-iceblue rounded-lg text-sm focus:outline-none focus:border-artblue-600 font-sans text-artsilver-900">
+                            <option value="date-asc">Date: Earliest First</option>
+                            <option value="date-desc">Date: Latest First</option>
+                            <option value="name-asc">Theater: A to Z</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Results Section Header -->
+            <div class="flex items-center justify-between mb-6 px-2">
+                <div>
+                    <h3 class="font-cinzel text-2xl font-black text-artblue-950">Upcoming Screenings & Locations</h3>
+                    <p class="text-xs font-playfair italic text-artsilver-600 font-medium" id="results-count-text">Showing all scheduled events</p>
+                </div>
+                <div>
+                    <span class="inline-flex items-center px-3 py-1.5 rounded-full bg-artblue-100 text-artblue-900 text-xs font-cinzel font-bold border border-artblue-300 shadow-xs" id="badge-total-count">0 Found</span>
+                </div>
+            </div>
+
+            <!-- Screenings Grid -->
+            <div id="screenings-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Dynamically populated via JS -->
+            </div>
+
+            <!-- Empty State -->
+            <div id="no-results" class="hidden text-center py-16 bg-white rounded-xl border-2 border-iceblue shadow-lg p-8">
+                <div class="w-16 h-16 bg-iceblue-light rounded-full flex items-center justify-center mx-auto mb-4 text-artblue-600 border border-artblue-300">
+                    <i data-lucide="search-x" class="w-8 h-8"></i>
+                </div>
+                <h4 class="font-cinzel text-xl font-bold text-artblue-950 mb-2">No Screenings Match Your Criteria</h4>
+                <p class="text-artsilver-600 text-sm max-w-md mx-auto mb-6 font-playfair">
+                    Try broadening your search parameters or check back soon as new silent film events are added weekly.
+                </p>
+                <button onclick="resetFilters()" class="bg-artblue-700 hover:bg-artblue-800 text-white font-cinzel font-bold text-xs px-6 py-3 rounded-lg shadow tracking-widest transition-all">
+                    CLEAR ALL FILTERS
+                </button>
+            </div>
+        </section>
+
+        <!-- TAB 2: POINTS OF INTEREST / COMMUNITY RESOURCES -->
+        <section id="tab-poi" class="tab-content hidden max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <div class="bg-gradient-to-r from-artblue-900 via-artblue-800 to-artblue-900 text-white rounded-xl p-8 sm:p-12 mb-10 shadow-2xl relative overflow-hidden border-2 border-artgold">
+                <div class="absolute -right-10 -bottom-10 opacity-15 pointer-events-none">
+                    <i data-lucide="compass" class="w-80 h-80 text-artgold"></i>
+                </div>
+                <div class="max-w-2xl relative z-10">
+                    <div class="inline-flex items-center space-x-2 bg-artblue-950/80 border border-artgold px-3.5 py-1.5 rounded-full text-xs font-cinzel font-bold text-artgold-light mb-4 shadow-sm">
+                        <i data-lucide="bookmark" class="w-3.5 h-3.5 text-artgold"></i>
+                        <span>Curated Community Directory</span>
+                    </div>
+                    <h2 class="font-cinzel text-3xl sm:text-4xl font-black tracking-wide mb-3 text-white">
+                        Silent Film Points of Interest
+                    </h2>
+                    <p class="font-playfair text-iceblue text-base sm:text-lg mb-4 leading-relaxed">
+                        Explore the global digital landscape of silent cinema enthusiasts, researchers, societies, and creators. Connect via podcasts, blogs, social media channels, and archives.
+                    </p>
+                </div>
+            </div>
+
+            <!-- POI Filter Categories -->
+            <div class="flex flex-wrap gap-2.5 mb-8 border-b-2 border-iceblue pb-4">
+                <button onclick="filterPOI('all')" id="poi-btn-all" class="poi-cat-btn px-4 py-2.5 rounded-lg text-xs font-cinzel font-bold bg-artblue-700 text-white shadow-md">All Resources</button>
+                <button onclick="filterPOI('society')" id="poi-btn-society" class="poi-cat-btn px-4 py-2.5 rounded-lg text-xs font-cinzel font-semibold bg-white text-artblue-950 border border-iceblue hover:bg-iceblue-light">Societies & Websites</button>
+                <button onclick="filterPOI('podcast')" id="poi-btn-podcast" class="poi-cat-btn px-4 py-2.5 rounded-lg text-xs font-cinzel font-semibold bg-white text-artblue-950 border border-iceblue hover:bg-iceblue-light">Podcasts</button>
+                <button onclick="filterPOI('blog')" id="poi-btn-blog" class="poi-cat-btn px-4 py-2.5 rounded-lg text-xs font-cinzel font-semibold bg-white text-artblue-950 border border-iceblue hover:bg-iceblue-light">Blogs & Journals</button>
+                <button onclick="filterPOI('social')" id="poi-btn-social" class="poi-cat-btn px-4 py-2.5 rounded-lg text-xs font-cinzel font-semibold bg-white text-artblue-950 border border-iceblue hover:bg-iceblue-light">Social Media & Communities</button>
+            </div>
+
+            <!-- POI Grid -->
+            <div id="poi-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Dynamically populated -->
+            </div>
+        </section>
+
+        <!-- TAB 3: SUBMIT EVENT / THEATER -->
+        <section id="tab-submit" class="tab-content hidden max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+            <div class="bg-white rounded-xl shadow-2xl border-2 border-artgold p-8 sm:p-10 relative overflow-hidden">
+                <div class="absolute top-0 right-0 w-40 h-40 bg-iceblue-light rounded-bl-full pointer-events-none -z-0"></div>
+                
+                <div class="text-center max-w-xl mx-auto mb-8 relative z-10">
+                    <div class="inline-flex items-center justify-center w-14 h-14 bg-iceblue text-artblue-700 rounded-full mb-3 border-2 border-artgold shadow-inner">
+                        <i data-lucide="send" class="w-6 h-6"></i>
+                    </div>
+                    <h2 class="font-cinzel text-2xl sm:text-3xl font-black text-artblue-950 mb-2">Submit a Silent Film Screening</h2>
+                    <p class="font-playfair text-artsilver-600 text-sm">
+                        Are you organizing a screening or managing a historic theater? Submit your event details below for inclusion in our international directory. Submissions are reviewed and published promptly.
+                    </p>
+                </div>
+
+                <form id="submit-screening-form" onsubmit="handleFormSubmission(event)" class="space-y-6 relative z-10">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                        <!-- Theater Name -->
+                        <div>
+                            <label class="block font-cinzel text-xs font-bold text-artblue-950 mb-1.5">Theater / Venue Name *</label>
+                            <input type="text" id="sub-theater" required placeholder="e.g. Grauman's Egyptian Theatre" class="w-full px-4 py-3 bg-iceblue-light/40 border border-iceblue rounded-lg text-sm focus:outline-none focus:border-artblue-600 font-sans text-artsilver-900">
+                        </div>
+
+                        <!-- Film Title -->
+                        <div>
+                            <label class="block font-cinzel text-xs font-bold text-artblue-950 mb-1.5">Film Title(s) *</label>
+                            <input type="text" id="sub-film" required placeholder="e.g. The Phantom of the Opera (1925)" class="w-full px-4 py-3 bg-iceblue-light/40 border border-iceblue rounded-lg text-sm focus:outline-none focus:border-artblue-600 font-sans text-artsilver-900">
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
+                        <!-- Screening Date -->
+                        <div>
+                            <label class="block font-cinzel text-xs font-bold text-artblue-950 mb-1.5">Screening Date *</label>
+                            <input type="date" id="sub-date" required class="w-full px-4 py-3 bg-iceblue-light/40 border border-iceblue rounded-lg text-sm focus:outline-none focus:border-artblue-600 font-sans text-artsilver-900">
+                        </div>
+
+                        <!-- Screening Time -->
+                        <div>
+                            <label class="block font-cinzel text-xs font-bold text-artblue-950 mb-1.5">Time & Accompaniment</label>
+                            <input type="text" id="sub-time" placeholder="e.g. 7:30 PM (Live Organ)" class="w-full px-4 py-3 bg-iceblue-light/40 border border-iceblue rounded-lg text-sm focus:outline-none focus:border-artblue-600 font-sans text-artsilver-900">
+                        </div>
+
+                        <!-- Country -->
+                        <div>
+                            <label class="block font-cinzel text-xs font-bold text-artblue-950 mb-1.5">Country *</label>
+                            <select id="sub-country" required class="w-full px-4 py-3 bg-iceblue-light/40 border border-iceblue rounded-lg text-sm focus:outline-none focus:border-artblue-600 font-sans text-artsilver-900">
+                                <option value="United States">United States</option>
+                                <option value="United Kingdom">United Kingdom</option>
+                                <option value="France">France</option>
+                                <option value="Germany">Germany</option>
+                                <option value="Italy">Italy</option>
+                                <option value="Canada">Canada</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
+                        <!-- City -->
+                        <div>
+                            <label class="block font-cinzel text-xs font-bold text-artblue-950 mb-1.5">City *</label>
+                            <input type="text" id="sub-city" required placeholder="e.g. Los Angeles" class="w-full px-4 py-3 bg-iceblue-light/40 border border-iceblue rounded-lg text-sm focus:outline-none focus:border-artblue-600 font-sans text-artsilver-900">
+                        </div>
+
+                        <!-- State / Province -->
+                        <div>
+                            <label class="block font-cinzel text-xs font-bold text-artblue-950 mb-1.5">State / Province</label>
+                            <input type="text" id="sub-state" placeholder="e.g. California" class="w-full px-4 py-3 bg-iceblue-light/40 border border-iceblue rounded-lg text-sm focus:outline-none focus:border-artblue-600 font-sans text-artsilver-900">
+                        </div>
+
+                        <!-- Zip Code -->
+                        <div>
+                            <label class="block font-cinzel text-xs font-bold text-artblue-950 mb-1.5">Zip / Postal Code</label>
+                            <input type="text" id="sub-zip" placeholder="e.g. 90028" class="w-full px-4 py-3 bg-iceblue-light/40 border border-iceblue rounded-lg text-sm focus:outline-none focus:border-artblue-600 font-sans text-artsilver-900">
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                        <!-- Area Code & Full Address -->
+                        <div>
+                            <label class="block font-cinzel text-xs font-bold text-artblue-950 mb-1.5">Area Code & Phone</label>
+                            <input type="text" id="sub-areacode" placeholder="e.g. 213 (555-0192)" class="w-full px-4 py-3 bg-iceblue-light/40 border border-iceblue rounded-lg text-sm focus:outline-none focus:border-artblue-600 font-sans text-artsilver-900">
+                        </div>
+
+                        <div>
+                            <label class="block font-cinzel text-xs font-bold text-artblue-950 mb-1.5">Street Address</label>
+                            <input type="text" id="sub-address" placeholder="e.g. 6712 Hollywood Blvd" class="w-full px-4 py-3 bg-iceblue-light/40 border border-iceblue rounded-lg text-sm focus:outline-none focus:border-artblue-600 font-sans text-artsilver-900">
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                        <!-- Theater Website Link -->
+                        <div>
+                            <label class="block font-cinzel text-xs font-bold text-artblue-950 mb-1.5">Theater Website URL *</label>
+                            <input type="url" id="sub-website" required placeholder="https://www.exampletheater.org" class="w-full px-4 py-3 bg-iceblue-light/40 border border-iceblue rounded-lg text-sm focus:outline-none focus:border-artblue-600 font-sans text-artsilver-900">
+                        </div>
+
+                        <!-- Submitter Contact Email -->
+                        <div>
+                            <label class="block font-cinzel text-xs font-bold text-artblue-950 mb-1.5">Your Contact Email *</label>
+                            <input type="email" id="sub-email" required placeholder="organizer@historiccinema.org" class="w-full px-4 py-3 bg-iceblue-light/40 border border-iceblue rounded-lg text-sm focus:outline-none focus:border-artblue-600 font-sans text-artsilver-900">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block font-cinzel text-xs font-bold text-artblue-950 mb-1.5">Additional Notes / Musician Info</label>
+                        <textarea id="sub-notes" rows="3" placeholder="Describe ticket prices, accompaniment details, intermission details..." class="w-full px-4 py-3 bg-iceblue-light/40 border border-iceblue rounded-lg text-sm focus:outline-none focus:border-artblue-600 font-sans text-artsilver-900"></textarea>
+                    </div>
+
+                    <div class="flex items-center justify-end space-x-4 pt-4 border-t border-iceblue">
+                        <button type="button" onclick="switchTab('explore')" class="px-5 py-3 text-xs font-cinzel font-bold text-artsilver-600 hover:text-artblue-950">Cancel</button>
+                        <button type="submit" class="bg-artblue-700 hover:bg-artblue-800 text-white font-cinzel font-black text-xs px-8 py-3.5 rounded-lg shadow-lg tracking-widest transition-all border border-artgold flex items-center space-x-2">
+                            <i data-lucide="check-circle" class="w-4 h-4 text-artgold-light"></i>
+                            <span>SUBMIT SCREENING</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </section>
+
+        <!-- TAB 4: ADMIN PORTAL -->
+        <section id="tab-admin" class="tab-content hidden max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <div class="bg-white rounded-xl shadow-xl border-2 border-iceblue p-6 sm:p-8 mb-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+                <div class="flex items-center space-x-4">
+                    <div class="w-14 h-14 rounded-xl bg-artblue-900 text-artgold flex items-center justify-center border-2 border-artgold shadow-md">
+                        <i data-lucide="shield" class="w-7 h-7"></i>
+                    </div>
+                    <div>
+                        <h2 class="font-cinzel text-2xl font-black text-artblue-950">Administration Dashboard</h2>
+                        <p class="text-xs font-playfair text-artsilver-600">Manage screenings, review pending submissions, and curate locations.</p>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-3">
+                    <button onclick="openAddEditModal(null)" class="bg-artblue-700 hover:bg-artblue-800 text-white font-cinzel text-xs font-bold px-5 py-3 rounded-lg shadow-md tracking-wider flex items-center space-x-2 border border-artgold">
+                        <i data-lucide="plus" class="w-4 h-4 text-artgold-light"></i>
+                        <span>Add New Location / Screening</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Submissions Queue Section -->
+            <div class="bg-white rounded-xl shadow-xl border-2 border-iceblue p-6 sm:p-8 mb-8">
+                <div class="flex items-center justify-between mb-4 pb-3 border-b border-iceblue">
+                    <div class="flex items-center space-x-2">
+                        <i data-lucide="inbox" class="w-5 h-5 text-artgold-dark"></i>
+                        <h3 class="font-cinzel font-bold text-artblue-950 text-lg">Pending Submissions Queue</h3>
+                    </div>
+                    <span id="pending-count-badge" class="px-3 py-1 bg-artgold/20 text-artgold-dark text-xs font-cinzel font-bold rounded-full">0 Pending</span>
+                </div>
+                <div id="submissions-list" class="space-y-4">
+                    <!-- Populated dynamically -->
+                </div>
+            </div>
+
+            <!-- Active Screenings Management Table -->
+            <div class="bg-white rounded-xl shadow-xl border-2 border-iceblue overflow-hidden">
+                <div class="p-6 sm:p-8 border-b border-iceblue flex items-center justify-between">
+                    <div class="flex items-center space-x-2">
+                        <i data-lucide="database" class="w-5 h-5 text-artblue-700"></i>
+                        <h3 class="font-cinzel font-bold text-artblue-950 text-lg">Active Directory Screenings</h3>
+                    </div>
+                    <span id="admin-total-count" class="text-xs font-cinzel font-semibold text-artsilver-600">0 Total Screenings</span>
+                </div>
+
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="bg-iceblue-light/75 border-b border-iceblue text-artblue-950 font-cinzel text-xs uppercase tracking-wider">
+                                <th class="p-4 sm:p-5">Theater / Venue</th>
+                                <th class="p-4 sm:p-5">Film Title</th>
+                                <th class="p-4 sm:p-5">Date & Time</th>
+                                <th class="p-4 sm:p-5">Location (City, State, Zip, Area)</th>
+                                <th class="p-4 sm:p-5 text-right">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="admin-table-body" class="divide-y divide-iceblue text-sm">
+                            <!-- Populated dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-artblue-950 text-iceblue border-t-2 border-artgold mt-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
+                <div class="md:col-span-2">
+                    <div class="flex items-center space-x-3 mb-4">
+                        <div class="w-9 h-9 rounded-full bg-artblue-700 flex items-center justify-center text-white border border-artgold shadow">
+                            <i data-lucide="film" class="w-4 h-4 text-artgold-light"></i>
+                        </div>
+                        <span class="font-cinzel font-bold text-lg text-white tracking-wider">SILENT FILM LOCATOR</span>
+                    </div>
+                    <p class="font-playfair text-artsilver-300 text-sm max-w-md leading-relaxed">
+                        Dedicated to preserving the vibrant heritage of silent cinema. Connecting enthusiasts with historic venues, live orchestral accompaniments, and timeless masterpieces across the globe.
+                    </p>
+                </div>
+                <div>
+                    <h4 class="font-cinzel font-bold text-xs uppercase tracking-widest text-artgold mb-4">Navigation</h4>
+                    <ul class="space-y-2 text-xs font-sans">
+                        <li><a href="#" onclick="switchTab('explore')" class="hover:text-white transition-colors">Find Screenings</a></li>
+                        <li><a href="#" onclick="switchTab('poi')" class="hover:text-white transition-colors">Points of Interest</a></li>
+                        <li><a href="#" onclick="switchTab('submit')" class="hover:text-white transition-colors">Submit Event</a></li>
+                        <li><a href="#" onclick="switchTab('admin')" class="hover:text-white transition-colors">Admin Portal</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-cinzel font-bold text-xs uppercase tracking-widest text-artgold mb-4">Art Deco Heritage</h4>
+                    <p class="text-xs text-artsilver-300 font-playfair leading-relaxed">
+                        Inspired by the glamorous golden era of cinema (1910–1930). Featuring ice blue skies, polished silver, and radiant cinema marquee elegance.
+                    </p>
+                </div>
+            </div>
+            <div class="border-t border-artblue-900 pt-6 flex flex-col sm:flex-row items-center justify-between text-xs text-artsilver-400 font-cinzel">
+                <p>&copy; 2026 Silent Film Locator. Preserving Cinematic History.</p>
+                <p class="mt-2 sm:mt-0 text-artgold-light">Crafted with 1920s Art Deco Glamour</p>
+            </div>
+        </div>
+    </footer>
+
+    
+    <!-- Add / Edit Modal -->
+    <div id="screening-modal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4 hidden">
+        <div class="bg-white rounded-2xl shadow-2xl border-2 border-artgold max-w-2xl w-full max-h-[90vh] overflow-y-auto p-6 sm:p-8 relative">
+            <div class="flex items-center justify-between pb-4 border-b border-iceblue mb-6">
+                <div class="flex items-center space-x-2">
+                    <i data-lucide="film" class="w-5 h-5 text-artblue-700"></i>
+                    <h3 id="modal-title" class="font-cinzel font-bold text-xl text-artblue-950">Add / Edit Screening</h3>
+                </div>
+                <button onclick="closeAddEditModal()" class="p-1 rounded text-artsilver-500 hover:text-artblue-950">
+                    <i data-lucide="x" class="w-6 h-6"></i>
+                </button>
+            </div>
+
+            <form id="modal-form" onsubmit="saveModalScreening(event)" class="space-y-4">
+                <input type="hidden" id="modal-id">
+                
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block font-cinzel text-xs font-bold text-artblue-950 mb-1">Theater Name *</label>
+                        <input type="text" id="m-theater" required class="w-full px-3.5 py-2.5 bg-iceblue-light/50 border border-iceblue rounded-lg text-sm">
+                    </div>
+                    <div>
+                        <label class="block font-cinzel text-xs font-bold text-artblue-950 mb-1">Film Title(s) *</label>
+                        <input type="text" id="m-film" required class="w-full px-3.5 py-2.5 bg-iceblue-light/50 border border-iceblue rounded-lg text-sm">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    <div>
+                        <label class="block font-cinzel text-xs font-bold text-artblue-950 mb-1">Date *</label>
+                        <input type="date" id="m-date" required class="w-full px-3.5 py-2.5 bg-iceblue-light/50 border border-iceblue rounded-lg text-sm">
+                    </div>
+                    <div>
+                        <label class="block font-cinzel text-xs font-bold text-artblue-950 mb-1">Time / Accompaniment</label>
+                        <input type="text" id="m-time" placeholder="8:00 PM (Live Orchestra)" class="w-full px-3.5 py-2.5 bg-iceblue-light/50 border border-iceblue rounded-lg text-sm">
+                    </div>
+                    <div>
+                        <label class="block font-cinzel text-xs font-bold text-artblue-950 mb-1">Country *</label>
+                        <select id="m-country" required class="w-full px-3.5 py-2.5 bg-iceblue-light/50 border border-iceblue rounded-lg text-sm">
+                            <option value="United States">United States</option>
+                            <option value="United Kingdom">United Kingdom</option>
+                            <option value="France">France</option>
+                            <option value="Germany">Germany</option>
+                            <option value="Italy">Italy</option>
+                            <option value="Canada">Canada</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-4 gap-4">
+                    <div>
+                        <label class="block font-cinzel text-xs font-bold text-artblue-950 mb-1">City *</label>
+                        <input type="text" id="m-city" required class="w-full px-3.5 py-2.5 bg-iceblue-light/50 border border-iceblue rounded-lg text-sm">
+                    </div>
+                    <div>
+                        <label class="block font-cinzel text-xs font-bold text-artblue-950 mb-1">State / Prov</label>
+                        <input type="text" id="m-state" class="w-full px-3.5 py-2.5 bg-iceblue-light/50 border border-iceblue rounded-lg text-sm">
+                    </div>
+                    <div>
+                        <label class="block font-cinzel text-xs font-bold text-artblue-950 mb-1">Zip Code</label>
+                        <input type="text" id="m-zip" class="w-full px-3.5 py-2.5 bg-iceblue-light/50 border border-iceblue rounded-lg text-sm">
+                    </div>
+                    <div>
+                        <label class="block font-cinzel text-xs font-bold text-artblue-950 mb-1">Area Code</label>
+                        <input type="text" id="m-areacode" class="w-full px-3.5 py-2.5 bg-iceblue-light/50 border border-iceblue rounded-lg text-sm">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block font-cinzel text-xs font-bold text-artblue-950 mb-1">Street Address</label>
+                        <input type="text" id="m-address" class="w-full px-3.5 py-2.5 bg-iceblue-light/50 border border-iceblue rounded-lg text-sm">
+                    </div>
+                    <div>
+                        <label class="block font-cinzel text-xs font-bold text-artblue-950 mb-1">Theater Website URL *</label>
+                        <input type="url" id="m-website" required class="w-full px-3.5 py-2.5 bg-iceblue-light/50 border border-iceblue rounded-lg text-sm">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block font-cinzel text-xs font-bold text-artblue-950 mb-1">Description / Notes</label>
+                    <textarea id="m-notes" rows="2" class="w-full px-3.5 py-2.5 bg-iceblue-light/50 border border-iceblue rounded-lg text-sm"></textarea>
+                </div>
+
+                <div class="flex items-center justify-end space-x-3 pt-4 border-t border-iceblue">
+                    <button type="button" onclick="closeAddEditModal()" class="px-4 py-2 text-xs font-cinzel font-bold text-artsilver-600">Cancel</button>
+                    <button type="submit" class="bg-artblue-700 hover:bg-artblue-800 text-white font-cinzel font-bold text-xs px-6 py-3 rounded-lg shadow tracking-widest border border-artgold">Save Screening</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Notification Toast Message Box -->
+    <div id="toast" class="fixed bottom-5 right-5 z-50 transform translate-y-20 opacity-0 transition-all duration-300 pointer-events-none">
+        <div class="bg-artblue-950 text-white px-6 py-4 rounded-xl shadow-2xl border-2 border-artgold flex items-center space-x-3">
+            <div id="toast-icon" class="text-artgold">
+                <i data-lucide="check-circle" class="w-5 h-5"></i>
+            </div>
+            <div>
+                <h5 id="toast-title" class="font-cinzel font-bold text-xs uppercase tracking-wider text-artgold-light">Success</h5>
+                <p id="toast-message" class="text-xs text-iceblue font-sans">Operation completed successfully.</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Initial Mock Data pre-loaded with rich silent film screenings
+        let screenings = [
+            {
+                id: "1",
+                theater: "Grauman's Egyptian Theatre",
+                film: "Metropolis (1927)",
+                date: "2026-04-15",
+                time: "7:30 PM (Live Pipe Organ)",
+                country: "United States",
+                state: "California",
+                city: "Los Angeles",
+                zip: "90028",
+                areacode: "213",
+                address: "6712 Hollywood Blvd, Hollywood, CA",
+                website: "https://www.americancinematheque.com",
+                notes: "Restored 148-minute Gottfried Huppertz score performed live.",
+                status: "active"
+            },
+            {
+                id: "2",
+                theater: "BFI Southbank",
+                film: "Sunrise: A Song of Two Humans (1927)",
+                date: "2026-04-20",
+                time: "6:00 PM (Live Chamber Orchestra)",
+                country: "United Kingdom",
+                state: "Greater London",
+                city: "London",
+                zip: "SE1 8XT",
+                areacode: "020",
+                address: "Belvedere Rd, South Bank, London SE1 8XT",
+                website: "https://whatson.bfi.org.uk",
+                notes: "Part of the F.W. Murnau retrospective showcase.",
+                status: "active"
+            },
+            {
+                id: "3",
+                theater: "Cinémathèque Française",
+                film: "Napoleon (1927) - Abel Gance Masterwork",
+                date: "2026-05-02",
+                time: "5:00 PM (Polyvision 3-Screen)",
+                country: "France",
+                state: "Île-de-France",
+                city: "Paris",
+                zip: "75012",
+                areacode: "01",
+                address: "51 Rue de Bercy, 75012 Paris",
+                website: "https://www.cinematheque.fr",
+                notes: "Rare screening with full symphony orchestra accompaniment.",
+                status: "active"
+            },
+            {
+                id: "4",
+                theater: "Castro Theatre",
+                film: "The General (1926) & Sherlock Jr. (1924)",
+                date: "2026-04-28",
+                time: "8:00 PM (Wurlitzer Organ)",
+                country: "United States",
+                state: "California",
+                city: "San Francisco",
+                zip: "94114",
+                areacode: "415",
+                address: "429 Castro St, San Francisco, CA",
+                website: "https://www.castrotheatre.com",
+                notes: "Buster Keaton double feature presented with live organist.",
+                status: "active"
+            },
+            {
+                id: "5",
+                theater: "Babylon Kino",
+                film: "The Cabinet of Dr. Caligari (1920)",
+                date: "2026-04-22",
+                time: "9:15 PM (Live Electronic Ambient Score)",
+                country: "Germany",
+                state: "Berlin",
+                city: "Berlin",
+                zip: "10178",
+                areacode: "030",
+                address: "Rosa-Luxemburg-Straße 30, 10178 Berlin",
+                website: "https://babylonberlin.eu",
+                notes: "Original German tinted print with live synthesizer accompaniment.",
+                status: "active"
+            }
+        ];
+
+        // Points of Interest Directory Data
+        const pointsOfInterest = [
+            {
+                title: "International Buster Keaton Society",
+                category: "society",
+                type: "Website & Society",
+                description: "Dedicated to preserving and celebrating the life, art, and timeless comedic genius of Buster Keaton through newsletters, events, and scholarly articles.",
+                url: "https://www.busterkeaton.org",
+                icon: "award"
+            },
+            {
+                title: "Silent Film Podcasts",
+                category: "podcast",
+                type: "Podcast",
+                description: "Deep dive discussions exploring silent era masterpieces, forgotten starlets, rediscovering lost reels, and interviews with contemporary silent film archivists.",
+                url: "https://podcasts.apple.com/search?term=silent+film",
+                icon: "mic"
+            },
+            {
+                title: "Silent Cinema Tumblr Community",
+                category: "social",
+                type: "Tumblr Blog & Aesthetic",
+                description: "A vibrant visual community sharing high-resolution archival stills, vintage lobby cards, rare portraits, and GIFs of 1920s cinema stars.",
+                url: "https://www.tumblr.com/tagged/silent-film",
+                icon: "camera"
+            },
+            {
+                title: "Nitrate Ville Forums",
+                category: "society",
+                type: "Discussion Forum & Archive",
+                description: "The premier global online community for film archivists, historians, and collectors discussing early cinema history, home video restorations, and screenings.",
+                url: "https://www.nitrateville.com",
+                icon: "globe"
+            },
+            {
+                title: "Silent Film Instagram Daily",
+                category: "social",
+                type: "Instagram",
+                description: "Curated daily photo archives highlighting iconic performances by Charlie Chaplin, Louise Brooks, Lon Chaney, and Greta Garbo.",
+                url: "https://www.instagram.com/explore/tags/silentfilm/",
+                icon: "instagram"
+            },
+            {
+                title: "CineSilente Blog",
+                category: "blog",
+                type: "Film Review Blog",
+                description: "In-depth reviews, festival reports, and historical essays covering silent cinema across international film movements and silent era retrospectives.",
+                url: "https://cinesilente.wordpress.com",
+                icon: "book-open"
+            },
+            {
+                title: "Silent Film Twitter / X Community",
+                category: "social",
+                type: "Twitter / X",
+                description: "Real-time discussions among silent film scholars, upcoming festival announcements, live streaming discussions, and rare photo discoveries.",
+                url: "https://twitter.com/search?q=%23SilentFilm",
+                icon: "message-square"
+            },
+            {
+                title: "Classic Silent Film Facebook Group",
+                category: "social",
+                type: "Facebook Group",
+                description: "An active international community of over 25,000 members discussing rare prints, pianists, organists, and physical media releases.",
+                url: "https://www.facebook.com/groups/silentfilmfans",
+                icon: "users"
+            },
+            {
+                title: "The Silent Film Sound & Music Archive",
+                category: "society",
+                type: "Archive & Website",
+                description: "Dedicated to rescuing, archiving, and digitizing historic silent film sheet music and orchestral scores to enable authentic live performances.",
+                url: "https://www.sfsma.org",
+                icon: "music"
+            }
+        ];
+
+        // Submission Queue
+        let submissions = [
+            {
+                id: "sub-1",
+                theater: "The Majestic Silent Palace",
+                film: "The Phantom of the Opera (1925)",
+                date: "2026-05-10",
+                time: "7:00 PM",
+                country: "United States",
+                state: "New York",
+                city: "New York",
+                zip: "10001",
+                areacode: "212",
+                address: "123 Broadway, NY",
+                website: "https://www.majesticpalace.org",
+                email: "events@majesticpalace.org",
+                notes: "Featuring Lon Chaney with live organ accompaniment.",
+                status: "pending"
+            }
+        ];
+
+        // Tab Navigation Controller
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.getElementById(`tab-${tabId}`).classList.remove('hidden');
+
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('text-artblue-900', 'border-b-2', 'border-artgold', 'font-bold');
+                btn.classList.add('text-artsilver-600', 'font-semibold');
+            });
+
+            const activeBtn = document.getElementById(`nav-${tabId}`);
+            if (activeBtn) {
+                activeBtn.classList.remove('text-artsilver-600', 'font-semibold');
+                activeBtn.classList.add('text-artblue-900', 'border-b-2', 'border-artgold', 'font-bold');
+            }
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+
+            if (tabId === 'admin') {
+                renderAdminData();
+            } else if (tabId === 'poi') {
+                renderPOI('all');
+            }
+            lucide.createIcons();
+        }
+
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobile-menu');
+            menu.classList.toggle('hidden');
+        }
+
+        // Render Points of Interest
+        function filterPOI(category) {
+            document.querySelectorAll('.poi-cat-btn').forEach(btn => {
+                btn.classList.remove('bg-artblue-700', 'text-white', 'font-bold', 'shadow-md');
+                btn.classList.add('bg-white', 'text-artblue-950', 'font-semibold');
+            });
+            const activeBtn = document.getElementById(`poi-btn-${category}`);
+            if (activeBtn) {
+                activeBtn.classList.remove('bg-white', 'text-artblue-950', 'font-semibold');
+                activeBtn.classList.add('bg-artblue-700', 'text-white', 'font-bold', 'shadow-md');
+            }
+
+            renderPOI(category);
+        }
+
+        function renderPOI(category) {
+            const grid = document.getElementById('poi-grid');
+            let filtered = pointsOfInterest;
+            if (category !== 'all') {
+                filtered = pointsOfInterest.filter(p => p.category === category);
+            }
+
+            grid.innerHTML = filtered.map(item => `
+                <div class="cinema-card rounded-xl p-6 flex flex-col justify-between relative overflow-hidden group">
+                    <div class="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-artblue-500 via-artgold to-artblue-500"></div>
+                    <div>
+                        <div class="flex items-center justify-between mb-3 pt-1">
+                            <span class="inline-flex items-center space-x-1.5 px-3 py-1 bg-iceblue text-artblue-950 text-xs font-cinzel font-bold rounded-md shadow-xs">
+                                <i data-lucide="${item.icon}" class="w-3.5 h-3.5 text-artblue-700"></i>
+                                <span>${item.type}</span>
+                            </span>
+                        </div>
+                        <h4 class="font-cinzel text-lg font-bold text-artblue-950 mb-2 group-hover:text-artblue-600 transition-colors">
+                            ${item.title}
+                        </h4>
+                        <p class="font-playfair text-xs text-artsilver-700 leading-relaxed mb-6">
+                            ${item.description}
+                        </p>
+                    </div>
+                    <div class="pt-4 border-t border-iceblue">
+                        <a href="${item.url}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center space-x-1.5 text-xs font-cinzel font-bold text-artblue-700 hover:text-artblue-950 underline">
+                            <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
+                            <span>Visit Resource</span>
+                        </a>
+                    </div>
+                </div>
+            `).join('');
+
+            lucide.createIcons();
+        }
+
+        // Search & Filtering Logic
+        function handleSearch() {
+            const keyword = document.getElementById('filter-keyword').value.toLowerCase();
+            const country = document.getElementById('filter-country').value;
+            const state = document.getElementById('filter-state').value.toLowerCase();
+            const city = document.getElementById('filter-city').value.toLowerCase();
+            const zip = document.getElementById('filter-zip').value.toLowerCase();
+            const areacode = document.getElementById('filter-areacode').value.toLowerCase();
+            const sort = document.getElementById('filter-sort').value;
+
+            let filtered = screenings.filter(item => {
+                const matchKeyword = !keyword || item.theater.toLowerCase().includes(keyword) || item.film.toLowerCase().includes(keyword) || item.notes.toLowerCase().includes(keyword);
+                const matchCountry = !country || item.country === country;
+                const matchState = !state || (item.state && item.state.toLowerCase().includes(state));
+                const matchCity = !city || (item.city && item.city.toLowerCase().includes(city));
+                const matchZip = !zip || (item.zip && item.zip.toLowerCase().includes(zip));
+                const matchArea = !areacode || (item.areacode && item.areacode.toLowerCase().includes(areacode));
+
+                return matchKeyword && matchCountry && matchState && matchCity && matchZip && matchArea;
+            });
+
+            // Sorting
+            filtered.sort((a, b) => {
+                if (sort === 'date-asc') return new Date(a.date) - new Date(b.date);
+                if (sort === 'date-desc') return new Date(b.date) - new Date(a.date);
+                if (sort === 'name-asc') return a.theater.localeCompare(b.theater);
+                return 0;
+            });
+
+            renderScreenings(filtered);
+        }
+
+        function resetFilters() {
+            document.getElementById('filter-keyword').value = '';
+            document.getElementById('filter-country').value = '';
+            document.getElementById('filter-state').value = '';
+            document.getElementById('filter-city').value = '';
+            document.getElementById('filter-zip').value = '';
+            document.getElementById('filter-areacode').value = '';
+            document.getElementById('filter-sort').value = 'date-asc';
+            handleSearch();
+        }
+
+        function renderScreenings(data) {
+            const grid = document.getElementById('screenings-grid');
+            const noResults = document.getElementById('no-results');
+            const countText = document.getElementById('results-count-text');
+            const badgeTotal = document.getElementById('badge-total-count');
+
+            badgeTotal.textContent = `${data.length} Found`;
+            countText.textContent = `Showing ${data.length} scheduled silent film screening${data.length === 1 ? '' : 's'}`;
+
+            if (data.length === 0) {
+                grid.innerHTML = '';
+                noResults.classList.remove('hidden');
+                return;
+            }
+
+            noResults.classList.add('hidden');
+            grid.innerHTML = data.map(item => {
+                const formattedDate = new Date(item.date).toLocaleDateString('en-US', {
+                    weekday: 'short', year: 'numeric', month: 'short', day: 'numeric'
+                });
+
+                const mapQuery = encodeURIComponent(`${item.theater}, ${item.address || ''} ${item.city}, ${item.state || ''} ${item.country}`);
+                const mapUrl = `https://www.google.com/maps/search/?api=1&query=${mapQuery}`;
+
+                return `
+                    <div class="cinema-card rounded-xl p-6 flex flex-col justify-between relative overflow-hidden group">
+                        <div class="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-artblue-500 via-artgold to-artblue-500"></div>
+                        
+                        <div>
+                            <div class="flex items-center justify-between mb-3 pt-1">
+                                <span class="inline-flex items-center space-x-1.5 px-3 py-1 bg-iceblue text-artblue-950 text-xs font-cinzel font-bold rounded-md shadow-xs">
+                                    <i data-lucide="calendar" class="w-3.5 h-3.5 text-artblue-700"></i>
+                                    <span>${formattedDate}</span>
+                                </span>
+                                <span class="text-xs font-playfair italic text-artgold-dark font-bold">${item.time || 'Time TBA'}</span>
+                            </div>
+
+                            <h4 class="font-cinzel text-lg font-bold text-artblue-950 mb-1 group-hover:text-artblue-600 transition-colors">
+                                ${item.film}
+                            </h4>
+                            
+                            <div class="flex items-center space-x-1.5 text-xs text-artsilver-700 font-sans mb-4">
+                                <i data-lucide="building-2" class="w-3.5 h-3.5 text-artblue-600 shrink-0"></i>
+                                <span class="font-semibold text-artblue-950">${item.theater}</span>
+                            </div>
+
+                            <div class="bg-iceblue-light/70 p-3.5 rounded-lg text-xs space-y-1.5 mb-4 border border-iceblue font-sans">
+                                <div class="flex items-start space-x-2">
+                                    <i data-lucide="map-pin" class="w-3.5 h-3.5 text-artblue-600 shrink-0 mt-0.5"></i>
+                                    <span>${item.address ? item.address + ', ' : ''}${item.city}, ${item.state ? item.state + ' ' : ''}${item.zip || ''}</span>
+                                </div>
+                                <div class="flex items-center space-x-4 text-artsilver-600 pt-1.5 border-t border-iceblue">
+                                    <span>Country: <strong class="text-artblue-950">${item.country}</strong></span>
+                                    ${item.areacode ? `<span>Area Code: <strong class="text-artblue-950">${item.areacode}</strong></span>` : ''}
+                                </div>
+                            </div>
+
+                            ${item.notes ? `<p class="font-playfair text-xs text-artsilver-700 italic mb-4">"${item.notes}"</p>` : ''}
+                        </div>
+
+                        <div class="flex items-center justify-between pt-4 border-t border-iceblue mt-2">
+                            <a href="${item.website}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center space-x-1.5 text-xs font-cinzel font-bold text-artblue-700 hover:text-artblue-950 underline">
+                                <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
+                                <span>Theater Website</span>
+                            </a>
+                            <a href="${mapUrl}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center space-x-1.5 bg-iceblue hover:bg-artblue-200 text-artblue-950 px-3 py-1.5 rounded-md text-xs font-cinzel font-bold transition-all shadow-xs">
+                                <i data-lucide="map" class="w-3.5 h-3.5 text-artblue-700"></i>
+                                <span>View Map</span>
+                            </a>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            lucide.createIcons();
+        }
+
+        // Submission Form Handling (Simulates email dispatch & adds to queue)
+        function handleFormSubmission(e) {
+            e.preventDefault();
+
+            const newSub = {
+                id: 'sub-' + Date.now(),
+                theater: document.getElementById('sub-theater').value,
+                film: document.getElementById('sub-film').value,
+                date: document.getElementById('sub-date').value,
+                time: document.getElementById('sub-time').value,
+                country: document.getElementById('sub-country').value,
+                city: document.getElementById('sub-city').value,
+                state: document.getElementById('sub-state').value,
+                zip: document.getElementById('sub-zip').value,
+                areacode: document.getElementById('sub-areacode').value,
+                address: document.getElementById('sub-address').value,
+                website: document.getElementById('sub-website').value,
+                email: document.getElementById('sub-email').value,
+                notes: document.getElementById('sub-notes').value,
+                status: 'pending'
+            };
+
+            submissions.push(newSub);
+            showToast("Screening Submitted", "Event sent to admin review queue and simulation email.");
+            document.getElementById('submit-screening-form').reset();
+            switchTab('explore');
+        }
+
+        // Admin Portal Rendering
+        function renderAdminData() {
+            // Render Pending Submissions
+            const subContainer = document.getElementById('submissions-list');
+            const pendingBadge = document.getElementById('pending-count-badge');
+            pendingBadge.textContent = `${submissions.length} Pending`;
+
+            if (submissions.length === 0) {
+                subContainer.innerHTML = `<p class="text-xs font-playfair text-artsilver-500 italic py-2">No pending event submissions at this time.</p>`;
+            } else {
+                subContainer.innerHTML = submissions.map(sub => `
+                    <div class="bg-iceblue-light/50 p-4.5 rounded-xl border border-iceblue flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                        <div>
+                            <div class="flex items-center space-x-2 mb-1">
+                                <span class="px-2.5 py-0.5 bg-artgold/20 text-artgold-dark text-xs font-cinzel font-bold rounded-md">Pending Review</span>
+                                <span class="text-xs text-artsilver-600 font-sans">Contact: ${sub.email}</span>
+                            </div>
+                            <h4 class="font-cinzel font-bold text-artblue-950 text-base">${sub.film} @ ${sub.theater}</h4>
+                            <p class="text-xs font-sans text-artsilver-700">Date: ${sub.date} | Location: ${sub.city}, ${sub.country} (${sub.zip || 'No Zip'})</p>
+                        </div>
+                        <div class="flex items-center space-x-2 shrink-0">
+                            <button onclick="approveSubmission('${sub.id}')" class="bg-artblue-700 hover:bg-artblue-800 text-white px-3.5 py-2 rounded-lg text-xs font-cinzel font-bold flex items-center space-x-1.5 shadow">
+                                <i data-lucide="check" class="w-3.5 h-3.5"></i>
+                                <span>Approve & Publish</span>
+                            </button>
+                            <button onclick="rejectSubmission('${sub.id}')" class="bg-red-50 hover:bg-red-100 text-red-700 px-3 py-2 rounded-lg text-xs font-cinzel font-bold border border-red-200">
+                                Reject
+                            </button>
+                        </div>
+                    </div>
+                `).join('');
+            }
+
+            // Render Active Directory Table
+            const tableBody = document.getElementById('admin-table-body');
+            document.getElementById('admin-total-count').textContent = `${screenings.length} Total Screenings`;
+
+            tableBody.innerHTML = screenings.map(item => `
+                <tr class="hover:bg-iceblue-light/40 transition-colors">
+                    <td class="p-4 sm:p-5 font-bold text-artblue-950">${item.theater}</td>
+                    <td class="p-4 sm:p-5 font-playfair font-medium">${item.film}</td>
+                    <td class="p-4 sm:p-5 text-xs font-sans">${item.date}<br><span class="text-artsilver-500">${item.time || ''}</span></td>
+                    <td class="p-4 sm:p-5 text-xs font-sans">${item.city}, ${item.state || ''} ${item.country}<br><span class="text-artsilver-500">Zip: ${item.zip || 'N/A'} | Area: ${item.areacode || 'N/A'}</span></td>
+                    <td class="p-4 sm:p-5 text-right space-x-2">
+                        <button onclick="openAddEditModal('${item.id}')" class="p-2 bg-iceblue hover:bg-artblue-200 text-artblue-900 rounded-lg transition-colors shadow-xs" title="Edit">
+                            <i data-lucide="edit-3" class="w-4 h-4"></i>
+                        </button>
+                        <button onclick="deleteScreening('${item.id}')" class="p-2 bg-red-50 hover:bg-red-100 text-red-600 rounded-lg transition-colors shadow-xs" title="Delete">
+                            <i data-lucide="trash-2" class="w-4 h-4"></i>
+                        </button>
+                    </td>
+                </tr>
+            `).join('');
+
+            lucide.createIcons();
+        }
+
+        function approveSubmission(id) {
+            const index = submissions.findIndex(s => s.id === id);
+            if (index !== -1) {
+                const item = submissions.splice(index, 1)[0];
+                item.id = 'scr-' + Date.now();
+                delete item.email;
+                delete item.status;
+                screenings.push(item);
+                showToast("Submission Approved", "The screening has been successfully published to the public directory.");
+                renderAdminData();
+                handleSearch();
+            }
+        }
+
+        function rejectSubmission(id) {
+            submissions = submissions.filter(s => s.id !== id);
+            showToast("Submission Rejected", "The event submission has been removed.", "alert-triangle");
+            renderAdminData();
+        }
+
+        function deleteScreening(id) {
+            if (confirm("Are you sure you wish to remove this screening from the directory?")) {
+                screenings = screenings.filter(s => s.id !== id);
+                showToast("Screening Removed", "The location and screening have been deleted.", "trash");
+                renderAdminData();
+                handleSearch();
+            }
+        }
+
+        // Modal Add/Edit Management
+        function openAddEditModal(id) {
+            const modal = document.getElementById('screening-modal');
+            const titleEl = document.getElementById('modal-title');
+            
+            document.getElementById('modal-form').reset();
+            document.getElementById('modal-id').value = '';
+
+            if (id) {
+                titleEl.textContent = 'Edit Screening & Location';
+                const item = screenings.find(s => s.id === id);
+                if (item) {
+                    document.getElementById('modal-id').value = item.id;
+                    document.getElementById('m-theater').value = item.theater;
+                    document.getElementById('m-film').value = item.film;
+                    document.getElementById('m-date').value = item.date;
+                    document.getElementById('m-time').value = item.time || '';
+                    document.getElementById('m-country').value = item.country;
+                    document.getElementById('m-city').value = item.city;
+                    document.getElementById('m-state').value = item.state || '';
+                    document.getElementById('m-zip').value = item.zip || '';
+                    document.getElementById('m-areacode').value = item.areacode || '';
+                    document.getElementById('m-address').value = item.address || '';
+                    document.getElementById('m-website').value = item.website;
+                    document.getElementById('m-notes').value = item.notes || '';
+                }
+            } else {
+                titleEl.textContent = 'Add New Screening & Location';
+            }
+
+            modal.classList.remove('hidden');
+            lucide.createIcons();
+        }
+
+        function closeAddEditModal() {
+            document.getElementById('screening-modal').classList.add('hidden');
+        }
+
+        function saveModalScreening(e) {
+            e.preventDefault();
+            const id = document.getElementById('modal-id').value;
+
+            const data = {
+                id: id || ('scr-' + Date.now()),
+                theater: document.getElementById('m-theater').value,
+                film: document.getElementById('m-film').value,
+                date: document.getElementById('m-date').value,
+                time: document.getElementById('m-time').value,
+                country: document.getElementById('m-country').value,
+                city: document.getElementById('m-city').value,
+                state: document.getElementById('m-state').value,
+                zip: document.getElementById('m-zip').value,
+                areacode: document.getElementById('m-areacode').value,
+                address: document.getElementById('m-address').value,
+                website: document.getElementById('m-website').value,
+                notes: document.getElementById('m-notes').value
+            };
+
+            if (id) {
+                const index = screenings.findIndex(s => s.id === id);
+                if (index !== -1) {
+                    screenings[index] = data;
+                }
+                showToast("Screening Updated", "Changes saved successfully.");
+            } else {
+                screenings.push(data);
+                showToast("Screening Created", "New location and screening added to directory.");
+            }
+
+            closeAddEditModal();
+            renderAdminData();
+            handleSearch();
+        }
+
+        // Toast Notification System
+        function showToast(title, message, iconName = 'check-circle') {
+            const toast = document.getElementById('toast');
+            document.getElementById('toast-title').textContent = title;
+            document.getElementById('toast-message').textContent = message;
+            
+            toast.classList.remove('translate-y-20', 'opacity-0');
+            toast.classList.add('translate-y-0', 'opacity-100');
+
+            setTimeout(() => {
+                toast.classList.remove('translate-y-0', 'opacity-100');
+                toast.classList.add('translate-y-20', 'opacity-0');
+            }, 4000);
+        }
+
+        // Initial Load on Window Startup
+        window.onload = function () {
+            handleSearch();
+            lucide.createIcons();
+        };
+    </script>
+</body>
+</html>
